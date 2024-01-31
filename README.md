@@ -26,6 +26,12 @@ every day in Unix. If you don't know what shell you are running, it's probably
 `bash`. One thing you should do on your own time is learn more about your
 shell, by reading the man pages or other online materials.
 
+### Source Code Directories
+msh - contains the file msh.c which you will modify for this assignment. No
+      other code may be modified
+
+tester - test harness.  No file in this directory may be modified
+
 ## Program Specifications
 
 ### Basic Shell: `msh`
@@ -120,15 +126,8 @@ consider the `access()` system call. For example, when the user types `ls`,
 and path is set to include both `/bin` and `/usr/bin`, try `access("/bin/ls",
 X_OK)`. If that fails, try "/usr/bin/ls". If that fails too, it is an error.
 
-Your initial shell path should contain one directory: `/bin`
-
-Note: Most shells allow you to specify a binary specifically without using a
-search path, using either **absolute paths** or **relative paths**. For
-example, a user could type the **absolute path** `/bin/ls` and execute the
-`ls` binary without a search path being needed. A user could also specify a
-**relative path** which starts with the current working directory and
-specifies the executable directly, e.g., `./main`. In this project, you **do
-not** have to worry about these features.
+Your shell path should search four directories: `/bin` '/usr/bin' '/usr/local/bin'
+and './'
 
 ### Built-in Commands
 
@@ -148,14 +147,6 @@ commands.
 * `cd`: `cd` always take one argument (0 or >1 args should be signaled as an
 error). To change directories, use the `chdir()` system call with the argument
 supplied by the user; if `chdir` fails, that is also an error.
-
-* `path`: The `path` command takes 0 or more arguments, with each argument
-  separated by whitespace from the others. A typical usage would be like this:
-  `msh> path /bin /usr/bin`, which would add `/bin` and `/usr/bin` to the
-  search path of the shell. If the user sets path to be empty, then the shell
-  should not be able to run any programs (except built-in commands). The
-  `path` command always overwrites the old path with the newly specified
-  path. 
 
 ### Redirection
 
@@ -181,6 +172,9 @@ are errors.
 
 Note: don't worry about redirection for built-in commands (e.g., we will
 not test what happens when you type `path /bin > file`).
+
+Hint: [popen.c](https://github.com/CSE3320-Spring-2024/Code-Samples/blob/main/popen.c)
+in the Code-Samples repo demonstrates how to do a redirection
 
 
 ### Program Errors
@@ -217,15 +211,13 @@ worrying about all of the error conditions and end cases. For example, first
 get a single command running (probably first a command with no arguments, such
 as `ls`). 
 
-Next, add built-in commands. Then, try working on redirection. Finally, think
-about parallel commands. Each of these requires a little more effort on
-parsing, but each should not be too hard to implement.
+Next, add built-in commands. Then, try working on redirection. 
 
 At some point, you should make sure your code is robust to white space of
 various kinds, including spaces (` `) and tabs (`\t`). In general, the user
 should be able to put variable amounts of white space before and after
-commands, arguments, and various operators; however, the operators
-(redirection and parallel commands) do not require whitespace.
+commands, arguments, and various operators; however, the 
+redirection operator does not require whitespace.
 
 Check the return codes of all system calls from the very beginning of your
 work. This will often catch errors in how you are invoking these new system
