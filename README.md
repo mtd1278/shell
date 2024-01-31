@@ -28,11 +28,31 @@ shell, by reading the man pages or other online materials.
 
 ### Source Code Directories
 msh - contains the file msh.c which you will modify for this assignment. No
-      other code may be modified
+      other file may be modified
 
 tester - test harness.  No file in this directory may be modified
 
+### Building the Shell
+You can build the code by typing:
+```
+make
+```
+### Testing the Shell
+You can run the provided tests by typing:
+```
+./test-msh.sh
+```
 ## Program Specifications
+
+### Submission
+
+Your code will be submitted by pushing your code to main.  Any other branches
+you have will not be graded.
+
+### Development Environment
+
+You code will be tested on a GitHub codespace.  Code that does not compile
+or run on the provided codespace will resulkt in a grade of 0.
 
 ### Basic Shell: `msh`
 
@@ -101,10 +121,10 @@ chapter](http://www.ostep.org/cpu-api.pdf) for a brief overview.
 
 You will note that there are a variety of commands in the `exec` family; for
 this project, you must use `execv`. You should **not** use the `system()`
-library function call to run a command.  Remember that if `execv()` is
-successful, it will not return; if it does return, there was an error (e.g.,
-the command does not exist). The most challenging part is getting the
-arguments correctly specified. 
+library function call to run a command.  Any use of system will result in
+a grade of 0.  Remember that if `execv()` is successful, it will not return; 
+if it does return, there was an error (e.g.,the command does not exist). 
+The most challenging part is getting the arguments correctly specified. 
 
 ### Paths
 
