@@ -126,15 +126,6 @@ The most challenging part is getting the arguments correctly specified.
 
 ### Paths
 
-In our example above, the user typed `ls` but the shell knew to execute the
-program `/bin/ls`. How does your shell know this?
-
-It turns out that the user must specify a **path** variable to describe the
-set of directories to search for executables; the set of directories that
-comprise the path are sometimes called the *search path* of the shell. The
-path variable contains the list of all directories to search, in order, when
-the user types a command. 
-
 **Important:** Note that the shell itself does not *implement* `ls` or other
 commands (except built-ins). All it does is find those executables in one of
 the directories specified by `path` and create a new process to run them.
