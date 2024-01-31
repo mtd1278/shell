@@ -28,10 +28,20 @@ shell, by reading the man pages or other online materials.
 
 ### Source Code Directories
 msh - contains the file msh.c which you will modify for this assignment. No
-      other code may be modified
+      other file may be modified
 
 tester - test harness.  No file in this directory may be modified
 
+### Building the Shell
+You can build the code by typing:
+```
+make
+```
+### Testing the Shell
+You can run the provided tests by typing:
+```
+./test-msh.sh
+```
 ## Program Specifications
 
 ### Basic Shell: `msh`
