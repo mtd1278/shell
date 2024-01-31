@@ -52,7 +52,7 @@ you have will not be graded.
 ### Development Environment
 
 You code will be tested on a GitHub codespace.  Code that does not compile
-or run on the provided codespace will resulkt in a grade of 0.
+or run on the provided codespace will result in a grade of 0.
 
 ### Basic Shell: `msh`
 
@@ -74,7 +74,7 @@ At this point, `msh` is running, and ready to accept commands. Type away!
 
 The mode above is called *interactive* mode, and allows the user to type
 commands directly. The shell also supports a *batch mode*, which instead reads
-input from a batch file and executes commands from therein. Here is how you
+input from a file and executes commands from therein. Here is how you
 run the shell with a batch file named `batch.txt`:
 
 ```
@@ -88,9 +88,7 @@ You should structure your shell such that it creates a process for each new
 command (the exception are *built-in commands*, discussed below).  Your basic
 shell should be able to parse a command and run the program corresponding to
 the command.  For example, if the user types `ls -la /tmp`, your shell should
-run the program `/bin/ls` with the given arguments `-la` and `/tmp` (how does
-the shell know to run `/bin/ls`? It's something called the shell **path**;
-more on this below).
+run the program `/bin/ls` with the given arguments `-la` and `/tmp` 
 
 ## Structure
 
