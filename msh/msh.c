@@ -29,10 +29,140 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
+#include <signal.h>
+#include <ctype.h>
+#include <dirent.h>
 
+#define WHITESPACE " \t\n"      // We want to split our command line up into tokens
+                                // so we need to define what delimits our tokens.
+                                // In this case  white space
+                                // will separate the tokens on our command line
+
+#define MAX_COMMAND_SIZE 255    // The maximum command-line size
+
+#define MAX_NUM_ARGUMENTS 32     
+
+void fork_and_exec_cmd(char * argv[])
+{
+  pid_t pid = fork();
+
+  if (pid == -1)
+  {
+    char error_message[30] = "fork error has occurred\n";
+    write(STDERR_FILENO, error_message, strlen(error_message));
+    exit(EXIT_FAILURE);
+  }
+  else if (pid == 0)
+  {
+    printf("argv[0] = %s", argv[0]);
+    int i = execv(argv[0], argv);
+    printf("i = %d", i);
+    if( i == -1)    
+    {
+      char error_message[30] = "execv error has occurred\n";
+      write(STDERR_FILENO, error_message, strlen(error_message));
+    }
+    exit(EXIT_SUCCESS);
+  }
+  else
+  {
+    int status;
+    waitpid(pid, &status, 0 );
+  }
+
+}
 
 int main( int argc, char * argv[] )
 {
+  char * command_string = (char*) malloc( MAX_COMMAND_SIZE ); // point to command string 
+
+  while( 1 )
+  {
+    // Print out the msh prompt
+    printf ("msh> ");
+
+    // Read the command from the command line.  The
+    // maximum command that will be read is MAX_COMMAND_SIZE
+    // This while command will wait here until the user
+    // inputs something.
+    while( !fgets (command_string, MAX_COMMAND_SIZE, stdin) );
+
+    /* Parse input */
+    char *token[MAX_NUM_ARGUMENTS]; // array of tokens 
+
+    int token_count = 0;                                 
+                                                           
+    // Pointer to point to the token
+    // parsed by strsep
+    char *argument_pointer;                                         
+                                                           
+    char *working_string  = strdup( command_string );     // strdup reutns a pointer to a duplicated of command string, terminated by null     
+
+    // we are going to move the working_string pointer so
+    // keep track of its original value so we can deallocate
+    // the correct amount at the end
+    
+    char *head_ptr = working_string;  // head pointer to duplicatd string 
+    
+    // Tokenize the input with whitespace used as the delimiter
+    // argument pointer points to tokenized duplicated string 
+    // while token not null and less than max args
+    while ( ( (argument_pointer = strsep(&working_string, WHITESPACE ) ) != NULL) && (token_count<MAX_NUM_ARGUMENTS))                                       
+    {
+      token[token_count] = strndup( argument_pointer, MAX_COMMAND_SIZE );  // duplicate argument pointer to token 
+      if( strlen( token[token_count] ) == 0 )
+      {
+        token[token_count] = NULL;
+      }
+        token_count++;
+    }
+
+    // Now print the tokenized input as a debug check
+    // \TODO Remove this code and replace with your shell functionality
+
+    /*
+    int token_index  = 0;
+    for( token_index = 0; token_index < token_count; token_index ++ ) 
+    {
+      printf("token[%d] = %s\n", token_index, token[token_index] );  
+    }
+    */
+
+    if ((strcmp(token[0], "exit")) && (strcmp(token[0], "cd")) && token[0] != NULL)
+    {
+      fork_and_exec_cmd(token);
+    }
+    else
+    {
+      if (token[0] != NULL)
+      {
+        if (strcmp(token[0], "exit") == 0)
+        {
+          exit(0);
+        }
+        else if (strcmp(token[0], "cd") == 0) // TODO: add error when 0 argv or >1 arg 
+        {
+          if (token[1] != NULL)
+          {
+            if (chdir(token[1]) == -1)
+            {
+              char error_message[30] = "chdir error has occurred\n";
+              write(STDERR_FILENO, error_message, strlen(error_message));
+              exit(EXIT_FAILURE);
+            }
+            else
+            {
+              break;
+            }
+          }
+        }
+      }
+    }
+    
+
+    free( head_ptr );
+    free(command_string);
+
+  }
   return 0;
 }
-
