@@ -197,23 +197,21 @@ int main( int argc, char * argv[] )
     {
       if (token[0] != NULL)
       {
-        if (strcmp(token[0], "exit") == 0)
+        if (strcmp(token[0], "exit") == 0 && token[1] == NULL)
         {
           exit(0);
         }
-        else if (strcmp(token[0], "cd") == 0 && token[1] != NULL && token[2] == NULL)                           // TODO: add error when 0 argv or >1 arg 
+        else if (strcmp(token[0], "cd") == 0 && token[1] != NULL && token[2] == NULL)                         
         {
-          printf("in cd\n");                                                    // TODO
           if (chdir(token[1]) == -1)
           {
-            char error_message[30] = "chdir error has occurred\n";              // TODO
+            char error_message[30] = "An error has occurred\n";              
             write(STDERR_FILENO, error_message, strlen(error_message));
           }
-          printf("done cd\n");                                                  // TODO
         }
         else
         {
-          char error_message[30] = "An error has occurred\n";              // TODO
+          char error_message[30] = "An error has occurred\n";             
           write(STDERR_FILENO, error_message, strlen(error_message));
         }
       }
