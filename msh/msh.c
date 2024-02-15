@@ -81,6 +81,7 @@ int main( int argc, char * argv[] )
   {
     // batch 
     FILE* file = fopen(argv[1], "r");
+
     fclose(file);
   }
   else
@@ -146,35 +147,41 @@ int main( int argc, char * argv[] )
       char path1[50] = "/usr/bin/";
       char path2[50] = "/usr/local/bin/";
       char path3[50] = "./";
+      char *test[MAX_NUM_ARGUMENTS];
       printf("token [0] in non builtin: %s\n", token[0]);
-      token[0] = strcat(path0, token[0]);
-      if (access(token[0], X_OK) == 0)
+      test[0]= strcat(path0, token[0]);
+      if (access(test[0], X_OK) == 0)
       {
         printf("hi\n");
+        token[0] = test[0];
+        printf("token [0] in path 0: %s\n", token[0]);
         fork_and_exec_cmd(token); 
       }
       else
       {
-        token[0] = strcat(path1, token[0]);
-        if (access(path1, X_OK) == 0)
+        test[0] = strcat(path1, token[0]);
+        if (access(test[0], X_OK) == 0)
         {
           printf("hi 1\n");
+          token[0] = test[0];
           fork_and_exec_cmd(token); 
         }
         else
         {
-          token[0] = strcat(path2, token[0]);
-          if (access(path2, X_OK) == 0)
+          test[0] = strcat(path2, token[0]);
+          if (access(test[2], X_OK) == 0)
           {
             printf("hi 2\n");
+            token[0] = test[0];
             fork_and_exec_cmd(token); 
           }
           else
           {
-            token[0] = strcat(path3, token[0]);
-            if (access(path3, X_OK) == 0)
+            test[0] = strcat(path3, token[0]);
+            if (access(test[0], X_OK) == 0)
             {
               printf("hi3 \n");
+              token[0] = test[0];
               fork_and_exec_cmd(token); 
             }
             else
