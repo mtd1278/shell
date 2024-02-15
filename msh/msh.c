@@ -48,26 +48,26 @@ void fork_and_exec_cmd(char * argv[])
 
   if (pid == -1)
   {
-    char error_message[30] = "fork error has occurred\n";
+    char error_message[30] = "fork error has occurred\n";                // TODO 
     write(STDERR_FILENO, error_message, strlen(error_message));
     exit(EXIT_FAILURE);
   }
   else if (pid == 0)
   {
-    printf("argv[0] = %s", argv[0]);
-    int i = execv(argv[0], argv);
-    printf("i = %d", i);
-    if( i == -1)    
+    int i = execv(argv[0], argv);                                         // ls works with /bin/ls
+    if( i == -1) 
     {
-      char error_message[30] = "execv error has occurred\n";
+      char error_message[30] = "execv error has occurred\n";              // TODO
       write(STDERR_FILENO, error_message, strlen(error_message));
     }
+    fflush(NULL);
     exit(EXIT_SUCCESS);
   }
   else
   {
     int status;
     waitpid(pid, &status, 0 );
+    fflush(NULL);
   }
 
 }
@@ -76,6 +76,18 @@ int main( int argc, char * argv[] )
 {
   char * command_string = (char*) malloc( MAX_COMMAND_SIZE ); // point to command string 
 
+
+  if (argc > 1)
+  {
+    // batch 
+    FILE* file = fopen(argv[1], "r");
+
+
+    fclose(file);
+  }
+  else
+  {                   
+    
   while( 1 )
   {
     // Print out the msh prompt
@@ -91,11 +103,11 @@ int main( int argc, char * argv[] )
     char *token[MAX_NUM_ARGUMENTS]; // array of tokens 
 
     int token_count = 0;                                 
-                                                           
+                                                          
     // Pointer to point to the token
     // parsed by strsep
     char *argument_pointer;                                         
-                                                           
+                                                          
     char *working_string  = strdup( command_string );     // strdup reutns a pointer to a duplicated of command string, terminated by null     
 
     // we are going to move the working_string pointer so
@@ -117,6 +129,7 @@ int main( int argc, char * argv[] )
         token_count++;
     }
 
+
     // Now print the tokenized input as a debug check
     // \TODO Remove this code and replace with your shell functionality
 
@@ -128,9 +141,52 @@ int main( int argc, char * argv[] )
     }
     */
 
-    if ((strcmp(token[0], "exit")) && (strcmp(token[0], "cd")) && token[0] != NULL)
+    // if not exit or cd 
+    if ((strcmp(token[0], "exit") != 0) && (strcmp(token[0], "cd") !=0 ) && token[0] != NULL)
     {
-      fork_and_exec_cmd(token);
+      char path0[50] = "/bin/";
+      char path1[50] = "/usr/bin/";
+      char path2[50] = "/usr/local/bin/";
+      char path3[50] = "./";
+      printf("token [0] in non builtin: %s\n", token[0]);
+      token[0] = strcat(path0, token[0]);
+      if (access(token[0], X_OK) == 0)
+      {
+        printf("hi\n");
+        fork_and_exec_cmd(token); 
+      }
+      else
+      {
+        token[0] = strcat(path1, token[0]);
+        if (access(path1, X_OK) == 0)
+        {
+          printf("hi 1\n");
+          fork_and_exec_cmd(token); 
+        }
+        else
+        {
+          token[0] = strcat(path2, token[0]);
+          if (access(path2, X_OK) == 0)
+          {
+            printf("hi 2\n");
+            fork_and_exec_cmd(token); 
+          }
+          else
+          {
+            token[0] = strcat(path3, token[0]);
+            if (access(path3, X_OK) == 0)
+            {
+              printf("hi3 \n");
+              fork_and_exec_cmd(token); 
+            }
+            else
+            {
+              char error_message[50] = "pass to fork&cmd error has occurred\n";              // TODO
+              write(STDERR_FILENO, error_message, strlen(error_message));
+            }
+          }
+        }
+      }
     }
     else
     {
@@ -140,29 +196,26 @@ int main( int argc, char * argv[] )
         {
           exit(0);
         }
-        else if (strcmp(token[0], "cd") == 0) // TODO: add error when 0 argv or >1 arg 
+        else if (strcmp(token[0], "cd") == 0 && token[1] != NULL && token[2] == NULL)                           // TODO: add error when 0 argv or >1 arg 
         {
-          if (token[1] != NULL)
+          printf("in cd\n");                                                    // TODO
+          if (chdir(token[1]) == -1)
           {
-            if (chdir(token[1]) == -1)
-            {
-              char error_message[30] = "chdir error has occurred\n";
-              write(STDERR_FILENO, error_message, strlen(error_message));
-              exit(EXIT_FAILURE);
-            }
-            else
-            {
-              break;
-            }
+            char error_message[30] = "chdir error has occurred\n";              // TODO
+            write(STDERR_FILENO, error_message, strlen(error_message));
           }
+          printf("done cd\n");                                                  // TODO
+        }
+        else
+        {
+          char error_message[30] = "An error has occurred\n";              // TODO
+          write(STDERR_FILENO, error_message, strlen(error_message));
         }
       }
     }
-    
-
-    free( head_ptr );
-    free(command_string);
-
+    free(head_ptr);
   }
+  free(command_string);
   return 0;
+  }
 }
