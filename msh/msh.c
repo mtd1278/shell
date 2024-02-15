@@ -81,8 +81,6 @@ int main( int argc, char * argv[] )
   {
     // batch 
     FILE* file = fopen(argv[1], "r");
-
-
     fclose(file);
   }
   else
