@@ -76,27 +76,35 @@ void fork_and_exec_cmd(char * argv[])
 int main( int argc, char * argv[] )
 {
   char * command_string = (char*) malloc( MAX_COMMAND_SIZE ); // point to command string 
+  char *buffer[MAX_COMMAND_SIZE];
 
+  
 
   if (argc > 1)  // batch 
   {
-    while(1)
-    {
-    printf("argv[1] = %s\n", argv[1]);
-    FILE* file = fopen(argv[1], "r");   // bus error opening 
+    FILE* file = fopen(argv[1], "r");   // bus error opening
+    buffer[0] = (char*)malloc(MAX_COMMAND_SIZE);
     if (file == NULL)
     {
       char error_message[30] = "An error has occurred\n";             
       write(STDERR_FILENO, error_message, strlen(error_message));
+      exit(0);
     }
-    char *buffer[MAX_COMMAND_SIZE];
     size_t n = 80;
-    getline(buffer, &n, file);
+    while(fgets(buffer[0], n, file) != 0)
+    {
+   //printf("argv[1] = %s\n", argv[1]);
+    
     char paths0[50] = "/bin/";
     char paths1[50] = "/usr/bin/";
     char paths2[50] = "/usr/local/bin/";
     char paths3[50] = "./";
     char *test[MAX_NUM_ARGUMENTS];
+    
+
+    // need to put tokenization 
+    // need to check for cd and exit
+
     test[0]= strcat(paths0, buffer[0]);
     if (access(test[0], X_OK) == 0)
     {
@@ -114,7 +122,7 @@ int main( int argc, char * argv[] )
       else
       {
         test[0] = strcat(paths2, buffer[0]);
-        if (access(test[2], X_OK) == 0)
+        if (access(test[0], X_OK) == 0)
         {
           buffer[0] = test[0];
           fork_and_exec_cmd(buffer); 
@@ -135,8 +143,9 @@ int main( int argc, char * argv[] )
         }
       }
     }
-    fclose(file);
+ 
     }
+    fclose(file);
   }
   else if (argc == 1)   // interactive 
   {                   
@@ -201,10 +210,7 @@ int main( int argc, char * argv[] )
             
             // Trim off the > output part of the command
             token[i] = NULL;
-        }
-        else
-        {
-          break;
+            // break;
         }
       } */
       
@@ -235,7 +241,7 @@ int main( int argc, char * argv[] )
           else
           {
             test[0] = strcat(path2, token[0]);
-            if (access(test[2], X_OK) == 0)
+            if (access(test[0], X_OK) == 0)
             {
               token[0] = test[0];
               fork_and_exec_cmd(token); 
@@ -271,12 +277,14 @@ int main( int argc, char * argv[] )
             {
               char error_message[30] = "An error has occurred\n";              
               write(STDERR_FILENO, error_message, strlen(error_message));
+              exit(1);
             }
           }
           else
           {
             char error_message[30] = "An error has occurred\n";             
             write(STDERR_FILENO, error_message, strlen(error_message));
+            exit(1);
           }
         }
       }
