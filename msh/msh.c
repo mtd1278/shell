@@ -136,85 +136,38 @@ void process_command_string(char * command_string)
         }
           token_count++;
       }
-      /*****************************************************/  // REDIRECTION
-      
-      
-      
-      /*****************************************************/ //
-  
-      // if not exit or cd 
-      if ((strcmp(token[0], "exit") != 0) && (strcmp(token[0], "cd") !=0 ) && token[0] != NULL)
+
+      if (token[0] != NULL)
       {
-        fork_and_exec_cmd(token, token_count); // can use execvp
-        /*
-        char path0[50] = "/bin/";
-        char path1[50] = "/usr/bin/";
-        char path2[50] = "/usr/local/bin/";
-        char path3[50] = "./";
-        char *test[MAX_NUM_ARGUMENTS];
-        test[0]= strcat(path0, token[0]);
-        if (access(test[0], X_OK) == 0)
+        if ((strcmp(token[0], "exit") != 0) && (strcmp(token[0], "cd") !=0 ))
         {
-          token[0] = test[0];
-          fork_and_exec_cmd(token); 
+          fork_and_exec_cmd(token, token_count); // can use execvp
         }
-        else
+        else if ((strcmp(token[0], "exit") == 0 && token[1] == NULL))
         {
-          test[0] = strcat(path1, token[0]);
-          if (access(test[0], X_OK) == 0)
-          {
-            token[0] = test[0];
-            fork_and_exec_cmd(token); 
-          }
-          else
-          {
-            test[0] = strcat(path2, token[0]);
-            if (access(test[0], X_OK) == 0)
-            {
-              token[0] = test[0];
-              fork_and_exec_cmd(token); 
-            }
-            else
-            {
-              test[0] = strcat(path3, token[0]);
-              if (access(test[0], X_OK) == 0)
-              {
-                token[0] = test[0];
-                fork_and_exec_cmd(token); 
-              }
-              else
-              {
-                char error_message[50] = "An error has occurred\n";             
-                write(STDERR_FILENO, error_message, strlen(error_message));
-              }
-            }
-          }
-        }*/
-      }
-      else
-      {
-        if (token[0] != NULL)
+          exit(0);
+        }
+        else if (strcmp(token[0], "cd") == 0 && token[1] != NULL && token[2] == NULL)                         
         {
-          if (strcmp(token[0], "exit") == 0 && token[1] == NULL)
+          if (chdir(token[1]) == -1)
           {
-            exit(0);
-          }
-          else if (strcmp(token[0], "cd") == 0 && token[1] != NULL && token[2] == NULL)                         
-          {
-            if (chdir(token[1]) == -1)
-            {
-              char error_message[30] = "An error has occurred\n";              
-              write(STDERR_FILENO, error_message, strlen(error_message));
-              return;
-            }
-          }
-          else
-          {
-            char error_message[30] = "An error has occurred\n";             
+            char error_message[30] = "An error has occurred\n";              
             write(STDERR_FILENO, error_message, strlen(error_message));
             return;
           }
         }
+        else
+        {
+          char error_message[30] = "An error has occurred\n";              
+          write(STDERR_FILENO, error_message, strlen(error_message));
+          return;
+        }
+      }
+      else
+      {
+        char error_message[30] = "An error has occurred\n";              
+        write(STDERR_FILENO, error_message, strlen(error_message));
+        return;
       }
       free(head_ptr);
 }
@@ -260,3 +213,47 @@ int main( int argc, char * argv[] )
   }
 }
 
+ /*
+        char path0[50] = "/bin/";
+        char path1[50] = "/usr/bin/";
+        char path2[50] = "/usr/local/bin/";
+        char path3[50] = "./";
+        char *test[MAX_NUM_ARGUMENTS];
+        test[0]= strcat(path0, token[0]);
+        if (access(test[0], X_OK) == 0)
+        {
+          token[0] = test[0];
+          fork_and_exec_cmd(token); 
+        }
+        else
+        {
+          test[0] = strcat(path1, token[0]);
+          if (access(test[0], X_OK) == 0)
+          {
+            token[0] = test[0];
+            fork_and_exec_cmd(token); 
+          }
+          else
+          {
+            test[0] = strcat(path2, token[0]);
+            if (access(test[0], X_OK) == 0)
+            {
+              token[0] = test[0];
+              fork_and_exec_cmd(token); 
+            }
+            else
+            {
+              test[0] = strcat(path3, token[0]);
+              if (access(test[0], X_OK) == 0)
+              {
+                token[0] = test[0];
+                fork_and_exec_cmd(token); 
+              }
+              else
+              {
+                char error_message[50] = "An error has occurred\n";             
+                write(STDERR_FILENO, error_message, strlen(error_message));
+              }
+            }
+          }
+        }*/
