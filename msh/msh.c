@@ -110,7 +110,7 @@ void process_command_string(char * command_string)
       {
         if( strcmp(token[i], ">") == 0 )
         {
-            if (token[i+1] == NULL)
+            if (token[i+1] == NULL || token[i+2] != NULL)
             {
               char error_message[30] = "An error has occurred\n";              
               write(STDERR_FILENO, error_message, strlen(error_message));
