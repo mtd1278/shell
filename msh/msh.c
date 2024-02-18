@@ -43,7 +43,7 @@
 
 #define MAX_NUM_ARGUMENTS 32     
 
-void fork_and_exec_cmd(char * argv[])
+void fork_and_exec_cmd(char * argv[], int token_count)
 {
   pid_t pid = fork();
 
@@ -55,6 +55,39 @@ void fork_and_exec_cmd(char * argv[])
   }
   else if (pid == 0)
   {
+    if (argv[0] != NULL)
+    {
+      int i;
+      for( i=1; i<token_count-1; i++ )
+      {
+        if( strcmp(argv[i], ">") == 0)
+        {
+            if (argv[i+1] == NULL || argv[i+2] != NULL)
+            {
+              char error_message[30] = "An error has occurred\n";              
+              write(STDERR_FILENO, error_message, strlen(error_message));
+              return;
+            }
+            int fd = open( argv[i+1], O_RDWR | O_CREAT, S_IRUSR | S_IWUSR ); // read/write, create file, usr read/writepermission bit 
+            if( fd < 0 )
+            {
+                perror( "Can't open output file." );
+                exit( 0 );                    
+            }
+            dup2( fd, 1 );
+            close( fd );
+            
+            // Trim off the > output part of the command
+            argv[i] = NULL;
+            break;
+        }
+      } 
+    }
+    else
+    {
+      char error_message[30] = "An error has occurred\n";              
+      write(STDERR_FILENO, error_message, strlen(error_message));
+    }
     int i = execvp(argv[0], argv);                                       
     if( i == -1) 
     {
@@ -104,38 +137,7 @@ void process_command_string(char * command_string)
           token_count++;
       }
       /*****************************************************/  // REDIRECTION
-      if (token[0] != NULL)
-      {
-        int i;
-        for( i=1; i<token_count-1; i++ )
-        {
-          if( strcmp(token[i], ">") == 0)
-          {
-              if (token[i+1] == NULL || token[i+2] != NULL || strcmp(token[i+2], ">") == 0)
-              {
-                char error_message[30] = "An error has occurred\n";              
-                write(STDERR_FILENO, error_message, strlen(error_message));
-                return;
-              }
-              int fd = open( token[i+1], O_RDWR | O_CREAT, S_IRUSR | S_IWUSR ); // read/write, create file, usr read/writepermission bit 
-              if( fd < 0 )
-              {
-                  perror( "Can't open output file." );
-                  exit( 0 );                    
-              }
-              dup2( fd, 1 );
-              close( fd );
-              
-              // Trim off the > output part of the command
-              token[i] = NULL;
-              break;
-          }
-        } 
-      }
-      else
-      {
-        return;
-      }
+      
       
       
       /*****************************************************/ //
@@ -143,7 +145,7 @@ void process_command_string(char * command_string)
       // if not exit or cd 
       if ((strcmp(token[0], "exit") != 0) && (strcmp(token[0], "cd") !=0 ) && token[0] != NULL)
       {
-        fork_and_exec_cmd(token); 
+        fork_and_exec_cmd(token, token_count); // can use execvp
         /*
         char path0[50] = "/bin/";
         char path1[50] = "/usr/bin/";
