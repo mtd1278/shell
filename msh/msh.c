@@ -108,12 +108,10 @@ void process_command_string(char * command_string)
       int i;
       for( i=1; i<token_count-1; i++ )
       {
-        printf("token[i+2]: %s\n", token[i+2]);
         if( strcmp(token[i], ">") == 0 )
         {
             if (token[i+1] == NULL || token[i+2] != NULL)
             {
-              printf("token[i+2]: %s\n", token[i+2]);
               char error_message[30] = "An error has occurred\n";              
               write(STDERR_FILENO, error_message, strlen(error_message));
               return;
