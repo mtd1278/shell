@@ -104,34 +104,33 @@ void process_command_string(char * command_string)
           token_count++;
       }
       /*****************************************************/  // REDIRECTION
-      if (token[0] != NULL)
+      
+      int i;
+      for( i=1; i<token_count-1; i++ )
       {
-        int i;
-        for( i=1; i<token_count-1; i++ )
+        if( strcmp(token[i], ">") == 0 )
         {
-          if( strcmp(token[i], ">") == 0 )
-          {
-              if (token[i+1] == NULL || token[i+2] == NULL)
-              {
-                char error_message[30] = "An error has occurred\n";              
-                write(STDERR_FILENO, error_message, strlen(error_message));
-                return;
-              }
-              int fd = open( token[i+1], O_RDWR | O_CREAT, S_IRUSR | S_IWUSR ); // read/write, create file, usr read/writepermission bit 
-              if( fd < 0 )
-              {
-                  perror( "Can't open output file." );
-                  exit( 0 );                    
-              }
-              dup2( fd, 1 );
-              close( fd );
-              
-              // Trim off the > output part of the command
-              token[i] = NULL;
-              break;
-          }
-        } 
-      }
+            if (token[i+1] == NULL || token[i+2] == NULL)
+            {
+              char error_message[30] = "An error has occurred\n";              
+              write(STDERR_FILENO, error_message, strlen(error_message));
+              return;
+            }
+            int fd = open( token[i+1], O_RDWR | O_CREAT, S_IRUSR | S_IWUSR ); // read/write, create file, usr read/writepermission bit 
+            if( fd < 0 )
+            {
+                perror( "Can't open output file." );
+                exit( 0 );                    
+            }
+            dup2( fd, 1 );
+            close( fd );
+            
+            // Trim off the > output part of the command
+            token[i] = NULL;
+            break;
+        }
+      } 
+      
       
       /*****************************************************/ //
   
