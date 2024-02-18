@@ -75,97 +75,7 @@ void fork_and_exec_cmd(char * argv[])
 
 void process_command_string(char * command_string)
 {
-<<<<<<< HEAD
     char *token[MAX_NUM_ARGUMENTS];  
-=======
-  char * command_string = (char*) malloc( MAX_COMMAND_SIZE ); // point to command string 
-  char *buffer[MAX_COMMAND_SIZE];
-
-  
-
-  if (argc > 1)  // batch 
-  {
-    FILE* file = fopen(argv[1], "r");   // bus error opening
-    buffer[0] = (char*)malloc(MAX_COMMAND_SIZE);
-    if (file == NULL)
-    {
-      char error_message[30] = "An error has occurred\n";             
-      write(STDERR_FILENO, error_message, strlen(error_message));
-      exit(0);
-    }
-    size_t n = 80;
-    while(fgets(buffer[0], n, file) != 0)
-    {
-   //printf("argv[1] = %s\n", argv[1]);
-    
-    char paths0[50] = "/bin/";
-    char paths1[50] = "/usr/bin/";
-    char paths2[50] = "/usr/local/bin/";
-    char paths3[50] = "./";
-    char *test[MAX_NUM_ARGUMENTS];
-    
-
-    // need to put tokenization 
-    // need to check for cd and exit
-
-    test[0]= strcat(paths0, buffer[0]);
-    if (access(test[0], X_OK) == 0)
-    {
-      buffer[0] = test[0];
-      fork_and_exec_cmd(buffer); 
-    }
-    else
-    {
-      test[0] = strcat(paths1, buffer[0]);
-      if (access(test[0], X_OK) == 0)
-      {
-        buffer[0] = test[0];
-        fork_and_exec_cmd(buffer); 
-      }
-      else
-      {
-        test[0] = strcat(paths2, buffer[0]);
-        if (access(test[0], X_OK) == 0)
-        {
-          buffer[0] = test[0];
-          fork_and_exec_cmd(buffer); 
-        }
-        else
-        {
-          test[0] = strcat(paths3, buffer[0]);
-          if (access(test[0], X_OK) == 0)
-          {
-            buffer[0] = test[0];
-            fork_and_exec_cmd(buffer); 
-          }
-          else
-          {
-            char error_message[50] = "An error has occurred\n";             
-            write(STDERR_FILENO, error_message, strlen(error_message));
-          }
-        }
-      }
-    }
- 
-    }
-    fclose(file);
-  }
-  else if (argc == 1)   // interactive 
-  {                   
-    while( 1 )
-    {
-      // Print out the msh prompt
-      printf ("msh> ");
-
-      // Read the command from the command line.  The
-      // maximum command that will be read is MAX_COMMAND_SIZE
-      // This while command will wait here until the user
-      // inputs something.
-      while( !fgets (command_string, MAX_COMMAND_SIZE, stdin) );
-
-      /* Parse input */
-      char *token[MAX_NUM_ARGUMENTS]; // array of tokens 
->>>>>>> a5734bfadd69db281e8265b013d5398e5062c6d2
 
       int token_count = 0;                                 
                                                             
@@ -217,15 +127,9 @@ void process_command_string(char * command_string)
             
             // Trim off the > output part of the command
             token[i] = NULL;
-<<<<<<< HEAD
             break;
         }
       } 
-=======
-            // break;
-        }
-      } */
->>>>>>> a5734bfadd69db281e8265b013d5398e5062c6d2
       
       /*****************************************************/ //
   
@@ -290,22 +194,14 @@ void process_command_string(char * command_string)
             {
               char error_message[30] = "An error has occurred\n";              
               write(STDERR_FILENO, error_message, strlen(error_message));
-<<<<<<< HEAD
               return;
-=======
-              exit(1);
->>>>>>> a5734bfadd69db281e8265b013d5398e5062c6d2
             }
           }
           else
           {
             char error_message[30] = "An error has occurred\n";             
             write(STDERR_FILENO, error_message, strlen(error_message));
-<<<<<<< HEAD
             return;
-=======
-            exit(1);
->>>>>>> a5734bfadd69db281e8265b013d5398e5062c6d2
           }
         }
       }
@@ -481,53 +377,3 @@ int main( int argc, char * argv[] )
   }
 }
 
-      
-/*char paths0[50] = "/bin/";
-    char paths1[50] = "/usr/bin/";
-    char paths2[50] = "/usr/local/bin/";
-    char paths3[50] = "./";
-    char *test[MAX_NUM_ARGUMENTS];
-    
-
-    // need to put tokenization 
-    // need to check for cd and exit
-
-    test[0]= strcat(paths0, buffer[0]);
-    if (access(test[0], X_OK) == 0)
-    {
-      buffer[0] = test[0];
-      fork_and_exec_cmd(buffer); 
-    }
-    else
-    {
-      test[0] = strcat(paths1, buffer[0]);
-      if (access(test[0], X_OK) == 0)
-      {
-        buffer[0] = test[0];
-        fork_and_exec_cmd(buffer); 
-      }
-      else
-      {
-        test[0] = strcat(paths2, buffer[0]);
-        if (access(test[0], X_OK) == 0)
-        {
-          buffer[0] = test[0];
-          fork_and_exec_cmd(buffer); 
-        }
-        else
-        {
-          test[0] = strcat(paths3, buffer[0]);
-          if (access(test[0], X_OK) == 0)
-          {
-            buffer[0] = test[0];
-            fork_and_exec_cmd(buffer); 
-          }
-          else
-          {
-            char error_message[50] = "An error has occurred\n";             
-            write(STDERR_FILENO, error_message, strlen(error_message));
-          }
-        }
-      }
-    }
- */
