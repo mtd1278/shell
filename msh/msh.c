@@ -165,8 +165,6 @@ void process_command_string(char * command_string)
       }
       else
       {
-        char error_message[30] = "An error has occurred\n";              
-        write(STDERR_FILENO, error_message, strlen(error_message));
         return;
       }
       free(head_ptr);
