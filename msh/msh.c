@@ -110,6 +110,12 @@ void process_command_string(char * command_string)
       {
         if( strcmp(token[i], ">") == 0 )
         {
+            if (token[i+1] == NULL)
+            {
+              char error_message[30] = "An error has occurred\n";              
+              write(STDERR_FILENO, error_message, strlen(error_message));
+              return;
+            }
             int fd = open( token[i+1], O_RDWR | O_CREAT, S_IRUSR | S_IWUSR ); // read/write, create file, usr read/writepermission bit 
             if( fd < 0 )
             {
@@ -220,7 +226,7 @@ int main( int argc, char * argv[] )
     size_t n = 80;
     while(fgets(buffer, n, file) != 0)
     {
-      process_string(buffer);
+      process_command_string(buffer);
     }
   fclose(file);
   }
@@ -236,7 +242,7 @@ int main( int argc, char * argv[] )
       // This while command will wait here until the user
       // inputs something.
       while( !fgets (command_string, MAX_COMMAND_SIZE, stdin) );
-      process_string(command_string);
+      process_command_string(command_string);
 
       /* Parse input */
       /*
