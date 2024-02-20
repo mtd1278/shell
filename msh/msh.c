@@ -183,7 +183,7 @@ int main( int argc, char * argv[] )
     {
       char error_message[30] = "An error has occurred\n";             
       write(STDERR_FILENO, error_message, strlen(error_message));
-      exit(0);
+      exit(1);
     }
     size_t n = 80;
     while(fgets(buffer, n, file) != 0)
