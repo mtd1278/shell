@@ -207,11 +207,17 @@ int main( int argc, char * argv[] )
       process_command_string(command_string);
     }
     free(command_string);
-    return 0;
   }
+  else if (argc > 2)
+  {
+    char error_message[30] = "An error has occurred\n";             
+    write(STDERR_FILENO, error_message, strlen(error_message));
+    exit(1);
+  }
+  return 0;
 }
 
- /*
+ /* paths if use execv, still error with some tests
         char path0[50] = "/bin/";
         char path1[50] = "/usr/bin/";
         char path2[50] = "/usr/local/bin/";
