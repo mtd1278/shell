@@ -130,15 +130,19 @@ void process_command_string(char * command_string)
       while ( ( (argument_pointer = strsep(&working_string, WHITESPACE ) ) != NULL) && (token_count<MAX_NUM_ARGUMENTS))                                       
       {
         token[token_count] = strndup( argument_pointer, MAX_COMMAND_SIZE );  // duplicate argument pointer to token 
-        if( strlen( token[token_count] ) == 0 )
+        if( token_count != 0 && strlen( token[token_count] ) == 0 )
         {
           token[token_count] = NULL;
         } 
-        else if (strlen( token[token_count] ) > 0)
+        if ( strlen( token[0] ) == 0 )
+        {
+          token[token_count] = NULL;
+        }
+        else
         {
           token_count++;
         }
-          
+        
       }
 
       if (token[0] != NULL)
