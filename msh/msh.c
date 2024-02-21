@@ -133,14 +133,18 @@ void process_command_string(char * command_string)
         if( strlen( token[token_count] ) == 0 )
         {
           token[token_count] = NULL;
-        }
+        } 
+        else if (strlen( token[token_count] ) > 0)
+        {
           token_count++;
+        }
+          
       }
 
       if (token[0] != NULL)
       {
         if ((strcmp(token[0], "exit") != 0) && (strcmp(token[0], "cd") !=0 ))
-        {
+        { 
           fork_and_exec_cmd(token, token_count); // can use execvp
         }
         else if ((strcmp(token[0], "exit") == 0 && token[1] == NULL))
