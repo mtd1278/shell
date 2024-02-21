@@ -58,7 +58,7 @@ void fork_and_exec_cmd(char * argv[], int token_count)
     if (argv[0] != NULL)
     {
       int i;
-      for( i=1; i<token_count-1; i++ )
+      for( i=1; i<token_count; i++ )
       {
         if( strcmp(argv[i], ">") == 0)
         {
